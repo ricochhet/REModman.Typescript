@@ -1,10 +1,10 @@
+import * as fs from "fs"
+import * as path from "path"
 import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
-import { ModData } from "../Interfaces/IModData"
-import * as path from "path"
-import * as fs from "fs"
 import { EnumHelper } from "../Enums/EnumHelper"
 import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
+import { SettingsManager } from "./SettingsManager"
 
 export abstract class DataManager {
     public static CreateIndex(type: GameType) {
@@ -19,8 +19,10 @@ export abstract class DataManager {
 
     public static CreateSettings() {
         if (!fs.existsSync(path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE))) {
-            // TODO - Implement SettingsManager
-            throw new Error()
+            SettingsManager.Save({
+                LastSelectedGame: GameType.None,
+                GamePaths: new Map<string, string>
+            })
         }
     }
 
