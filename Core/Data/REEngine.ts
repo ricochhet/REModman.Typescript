@@ -1,6 +1,5 @@
 import * as fs from "fs"
 import * as path from "path"
-import { GameType } from "../Enums/GameType"
 import { ModData } from "../Interfaces/IModData"
 
 export abstract class REEngine {
