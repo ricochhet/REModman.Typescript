@@ -2,13 +2,8 @@ import * as fs from "fs"
 import * as path from "path"
 import { GameType } from "../Enums/GameType"
 import { ModData } from "../Interfaces/IModData"
-import { ModFile } from "../Interfaces/IModFile"
 
 export abstract class REEngine {
-    private static ValidGameTypes: Array<GameType> = [
-        GameType.MonsterHunterRise
-    ]
-
     private static IsFilePatchPak(file: string) {
         return file.includes("re_chunk_") && file.includes("pak.patch") && file.includes(".pak")
     }
