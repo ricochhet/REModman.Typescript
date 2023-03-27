@@ -12,7 +12,7 @@ export abstract class SettingsManager {
         fs.writeFileSync(file, JSON.stringify(settings, null, 2))
     }
 
-    public static Load() {
+    public static Load(): SettingsData {
         if (fs.existsSync(Globals.DATA_FOLDER)) {
             const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
 
@@ -20,9 +20,9 @@ export abstract class SettingsManager {
                 return <SettingsData>JSON.parse(fs.readFileSync(file).toString())
             }
 
-            return null
+            return <SettingsData>{}
         }
 
-        return null
+        return <SettingsData>{}
     }
 }

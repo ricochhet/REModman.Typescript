@@ -73,7 +73,7 @@ export abstract class DataManager {
         }
     }
 
-    public static IndexFileExists(type: GameType) {
+    public static IndexFileExists(type: GameType): boolean {
         const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
         const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
 
@@ -84,7 +84,7 @@ export abstract class DataManager {
         return false
     }
 
-    public static SettingsFileExists() {
+    public static SettingsFileExists(): boolean {
         const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
 
         if (fs.existsSync(file)) {
@@ -94,7 +94,7 @@ export abstract class DataManager {
         return false
     }
 
-    public static DataFolderExists(type: GameType) {
+    public static DataFolderExists(type: GameType): boolean {
         const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
 
         if (fs.existsSync(folder)) {
@@ -104,7 +104,7 @@ export abstract class DataManager {
         return false
     }
 
-    public static ModsFolderExists(type: GameType) {
+    public static ModsFolderExists(type: GameType): boolean {
         const folder: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
 
         if (fs.existsSync(folder)) {
@@ -114,7 +114,7 @@ export abstract class DataManager {
         return false
     }
 
-    public static DownloadsFolderExists(type: GameType) {
+    public static DownloadsFolderExists(type: GameType): boolean {
         const folder: string = path.join(Globals.DOWNLOADS_FOLDER, EnumHelper.GetModFolder(type))
 
         if (fs.existsSync(folder)) {
@@ -124,23 +124,23 @@ export abstract class DataManager {
         return false
     }
 
-    public static GetModsFolderPath(type: GameType) {
+    public static GetModsFolderPath(type: GameType): string {
         const folder: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
 
         if (fs.existsSync(folder)) {
             return folder
         }
 
-        return null
+        return ""
     }
 
-    public static GetDownloadsFolderPath(type: GameType) {
+    public static GetDownloadsFolderPath(type: GameType): string {
         const folder: string = path.join(Globals.DOWNLOADS_FOLDER, EnumHelper.GetModFolder(type))
 
         if (fs.existsSync(folder)) {
             return folder
         }
 
-        return null
+        return ""
     }
 }
