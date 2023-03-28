@@ -3,31 +3,43 @@ import * as path from "path"
 import { ModData } from "../Interfaces/IModData"
 
 export abstract class REEngine {
-    private static IsFilePatchPak(file: string) {
+    private static IsFilePatchPak(file: string): boolean {
         return file.includes("re_chunk_") && file.includes("pak.patch") && file.includes(".pak")
     }
 
-    private static FixPatchPakFileName(value: number) {
+    private static FixPatchPakFileName(value: number): string {
         return "re_chunk_000.pak.patch_<REPLACE>.pak".replace("<REPLACE>", value.toString())
     }
 
-    public static IsNatives(directory: string) {
+    public static InstallPath(directory: string): string {
+        if (REEngine.IsNatives(directory)) {
+            return REEngine.GetRelativeFromNatives(directory)
+        } else if (REEngine.IsREF(directory)) {
+            return REEngine.GetRelativeFromREF(directory)
+        } else if (REEngine.IsValidPatchPak(directory)) {
+            return path.basename(directory)
+        }
+        
+        return ""
+    }
+
+    public static IsNatives(directory: string): boolean {
         return directory == "natives"
     }
 
-    public static GetRelativeFromNatives(directory: string) {
+    public static GetRelativeFromNatives(directory: string): string {
         return "natives" + directory.split("natives")[1]
     }
 
-    public static IsREF(directory: string) {
+    public static IsREF(directory: string): boolean {
         return directory == "reframework"
     }
 
-    public static GetRelativeFromREF(directory: string) {
+    public static GetRelativeFromREF(directory: string): string {
         return "reframework" + directory.split("reframework")[1]
     }
 
-    public static IsValidPatchPak(directory: string) {
+    public static IsValidPatchPak(directory: string): boolean {
         if (path.extname(directory) == ".pak") {
             if (REEngine.IsFilePatchPak(directory) || directory.includes("re_chunk_000")) {
                 return false
@@ -39,7 +51,7 @@ export abstract class REEngine {
         return false
     }
 
-    public static HasValidPatchPaks(mod: ModData) {
+    public static HasValidPatchPaks(mod: ModData): boolean {
         let hasValid: boolean = false
 
         for (const file of mod.Files) {
@@ -52,7 +64,7 @@ export abstract class REEngine {
         return hasValid
     }
 
-    public static Patch(list: Array<ModData>) {
+    public static Patch(list: Array<ModData>): Array<ModData> {
         let startIndex: number = 2
         const patchList: Array<ModData> = list
 

@@ -5,12 +5,15 @@ import { GameType } from "../Enums/GameType"
 import { EnumHelper } from "../Enums/EnumHelper"
 import { ModData } from "../Interfaces/IModData"
 import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
-import { GetDirectories } from "../Utils/GetDirectories"
+import { GetDirectories, GetFiles, WalkDirectory } from "../Utils/GetDirectories"
 import { ModFile } from "../Interfaces/IModFile"
-import { REEngine} from "../Data/REEngine"
- 
+import { REEngine } from "../Data/REEngine"
+import { IsSafe } from "../Utils/FileCheck"
+import { FileSha256, Sha256 } from "../Utils/Sha256"
+import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
+
 export abstract class ModManager {
-    private static Save(type: GameType, list: Array<ModData>) {
+    public static Save(type: GameType, list: Array<ModData>) {
         const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
         const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
 
@@ -22,20 +25,24 @@ export abstract class ModManager {
 
     public static Load(type: GameType): Array<ModData> {
         if (fs.existsSync(Globals.DATA_FOLDER)) {
-            const file: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
+            const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
+            const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
 
             if (fs.existsSync(file)) {
                 return <Array<ModData>>JSON.parse(fs.readFileSync(file).toString())
             }
 
-            return <Array<ModData>>{}
+            return <Array<ModData>>[]
         }
 
-        return <Array<ModData>>{}
+        return <Array<ModData>>[]
     }
 
     public static Find(list: Array<ModData>, identifier: string): ModData {
-        return <ModData>list.find(i => i.Hash == identifier)
+        if (list.length == 0 || list.length == undefined)
+            return <ModData>{}
+
+        return list.find(i => i.Hash == identifier) || <ModData>{}
     }
 
     public static SaveHashChanges(type: GameType, list: Array<ModData>) {
@@ -63,32 +70,68 @@ export abstract class ModManager {
     }
 
     public static GenerateIndex(type: GameType): Array<ModData> {
-        const list: Array<ModData> | null = ModManager.Load(type)
+        const list: Array<ModData> = ModManager.Load(type)
 
         if (list == null)
             throw new Error()
 
-        const gameDirectory: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
-        if (fs.existsSync(gameDirectory)) {
-            const modDirectories: string[] = GetDirectories(gameDirectory)
+        const gameDirectory = ""
+        const gameModDirectory: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
+        if (fs.existsSync(gameModDirectory)) {
+            const modDirectories: string[] = GetDirectories(gameModDirectory)
 
-            for (const directory in modDirectories) {
+            modDirectories.forEach(modDirectory => {
                 let hash: string = ""
-                const files: Array<ModFile> = []
-                const modItems: string[] = GetDirectories(directory)
+                const modFiles: Array<ModFile> = []
+                const modItems: string[] = GetDirectories(modDirectory)
 
-                for (const item in modItems) {
-                    if (REEngine.IsNatives(path.basename(item))) {
-                        // TODO - implement action for natives
-                    } else if (REEngine.IsREF(path.basename(item))) {
-                        // TODO - implement action for reframework
+                modItems.forEach(modItem => {
+                    if (REEngine.IsNatives(path.basename(modItem)) || REEngine.IsREF(path.basename(modItem))) {
+                        const files = WalkDirectory(modItem)
+
+                        files.forEach(file => {
+                            if (IsSafe(file)) {
+                                const installPath = path.join(gameDirectory, REEngine.InstallPath(file))
+                                const fileHash: string = FileSha256(file)
+                                hash += fileHash
+
+                                modFiles.push({
+                                    InstallPath: installPath,
+                                    SourcePath: file,
+                                    Hash: fileHash
+                                })
+                            }
+                        })
                     }
+                })
+
+                const files: string[] = GetFiles(modDirectory)
+                files.forEach(file => {
+                    if (IsSafe(file) && REEngine.IsValidPatchPak(file)) {
+                        const installPath = path.join(gameDirectory, REEngine.InstallPath(file))
+                        const fileHash: string = FileSha256(file)
+                        hash += fileHash
+
+                        modFiles.push({
+                            InstallPath: installPath,
+                            SourcePath: file,
+                            Hash: fileHash
+                        })
+                    }
+                })
+
+                const identifier: string = Sha256(hash)
+                if (modFiles.length != 0 && IsEmptyOrNull(ModManager.Find(list, identifier))) {
+                    list.push({
+                        Name: path.basename(modDirectory),
+                        Hash: identifier,
+                        LoadOrder: 0,
+                        BasePath: modDirectory,
+                        IsEnabled: false,
+                        Files: modFiles
+                    })
                 }
-
-                // TODO - implement searching for mod files
-
-                // TODO - implement adding mods to index
-            }
+            })
         }
 
         return list.sort(i => i.LoadOrder)
