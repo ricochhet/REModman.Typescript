@@ -13,7 +13,27 @@ export default class PathResolver {
         return PathResolver._MOD_DIR
     }
 
+    static get DATA_DIR(): string {
+        return PathResolver._DATA_DIR
+    }
+
+    static get DOWNLOAD_DIR(): string {
+        return PathResolver._DOWNLOAD_DIR
+    }
+
     static get LOG_PATH(): string {
         return path.join(PathResolver._DATA_DIR, PathResolver._LOG_FILE)
+    }
+
+    static get SETTINGS_PATH(): string {
+        return path.join(PathResolver._DATA_DIR, PathResolver._SETTINGS_FILE)
+    }
+
+    static INDEX_PATH(sub: string): string {
+        return path.join(PathResolver._DATA_DIR, sub, PathResolver._INDEX_FILE)
+    }
+
+    static MOD_PATH(sub: string): string {
+        return path.join(PathResolver._MOD_DIR, sub) 
     }
 }
