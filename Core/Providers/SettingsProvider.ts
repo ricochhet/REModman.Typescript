@@ -1,5 +1,4 @@
 import * as path from "path"
-import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
 import FsProvider from "./Generic/FsProvider"
 import { SettingsData } from "../Interfaces/ISettingsData"
@@ -15,7 +14,7 @@ export default abstract class SettingsManager {
     }
 
     public static Load(): SettingsData {
-        if (FsProvider.ExistsSync(Globals.DATA_FOLDER)) {
+        if (FsProvider.ExistsSync(PathResolver.DATA_DIR)) {
             const file: string = PathResolver.SETTINGS_PATH
 
             if (FsProvider.ExistsSync(file)) {
