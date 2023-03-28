@@ -2,7 +2,7 @@ import * as fs from "fs"
 import * as path from "path"
 import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
-import { EnumHelper } from "../Enums/EnumHelper"
+import GameTypeHelper from "../Enums/GameTypeHelper"
 import { ModData } from "../Interfaces/IModData"
 import EnsureDirectoryExistence from "../Utils/EnsureDirectoryExistence"
 import { GetDirectories, GetFiles, WalkDirectory } from "../Utils/GetDirectories"
@@ -16,7 +16,7 @@ import { CleanEmptyDirectories } from "../Utils/CleanEmptyDirectories"
 
 export default abstract class ModManager {
     private static Save(type: GameType, list: Array<ModData>) {
-        const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = path.join(Globals.DATA_FOLDER, GameTypeHelper.GetModFolder(type))
         const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
 
         const sorted: Array<ModData> = list.sort(i => i.LoadOrder)
@@ -27,7 +27,7 @@ export default abstract class ModManager {
 
     public static Load(type: GameType): Array<ModData> {
         if (fs.existsSync(Globals.DATA_FOLDER)) {
-            const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
+            const folder: string = path.join(Globals.DATA_FOLDER, GameTypeHelper.GetModFolder(type))
             const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
 
             if (fs.existsSync(file)) {
@@ -78,7 +78,7 @@ export default abstract class ModManager {
             throw new Error()
 
         const gameDirectory = SettingsManager.GetGamePath(type)
-        const gameModDirectory: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
+        const gameModDirectory: string = path.join(Globals.MODS_FOLDER, GameTypeHelper.GetModFolder(type))
         if (fs.existsSync(gameModDirectory)) {
             const modDirectories: string[] = GetDirectories(gameModDirectory)
 

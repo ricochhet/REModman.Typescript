@@ -1,8 +1,8 @@
-import { SearchType } from "./Enums/SearchType"
-import EnumError from "../Errors/EnumError"
-import { GetFiles, GetDirectories, GetDirectoriesRecursive } from "../Utils/GetDirectories"
+import { SearchType } from "./SearchType"
+import EnumError from "../../Errors/EnumError"
+import { GetFiles, GetDirectories, GetDirectoriesRecursive } from "../FsProviderUtils"
 
-export default function SearchHelper(type: SearchType, directory: string): string[] {
+export default function SearchTypeHelper(type: SearchType, directory: string): string[] {
     switch (type) {
         case SearchType.TopFilesOnly:
             return GetFiles(directory)

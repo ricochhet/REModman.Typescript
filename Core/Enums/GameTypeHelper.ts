@@ -1,7 +1,7 @@
-import { GameType } from "../Enums/GameType"
+import { GameType } from "./GameType"
 import { Globals } from "../Globals";
 
-export abstract class EnumHelper {
+export default abstract class GameTypeHelper {
     public static GetModFolder(type: GameType) {
         switch (type) {
             case GameType.None:
