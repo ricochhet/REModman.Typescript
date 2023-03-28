@@ -11,9 +11,11 @@ import { REEngine } from "../Data/REEngine"
 import { IsSafe } from "../Utils/FileCheck"
 import { FileSha256, Sha256 } from "../Utils/Sha256"
 import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
+import { SettingsManager } from "./SettingsManager"
+import { CleanEmptyDirectories } from "../Utils/CleanEmptyDirectories"
 
 export abstract class ModManager {
-    public static Save(type: GameType, list: Array<ModData>) {
+    private static Save(type: GameType, list: Array<ModData>) {
         const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
         const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
 
@@ -75,7 +77,7 @@ export abstract class ModManager {
         if (list == null)
             throw new Error()
 
-        const gameDirectory = ""
+        const gameDirectory = SettingsManager.GetGamePath(type)
         const gameModDirectory: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
         if (fs.existsSync(gameModDirectory)) {
             const modDirectories: string[] = GetDirectories(gameModDirectory)
@@ -138,27 +140,112 @@ export abstract class ModManager {
     }
 
     public static SetLoadOrder(type: GameType, identifier: string, order: number) {
-        // TODO - implement setting load order of identified mod
+        const list: Array<ModData> = ModManager.Load(type)
+        if (list.length == 0)
+            throw new Error()
+
+        const mod: ModData = ModManager.Find(list, identifier)
+        if (mod == null || IsEmptyOrNull(mod))
+            throw new Error()
+
+        if (mod.LoadOrder == order)
+            return
+
+        mod.LoadOrder = order
+        ModManager.SaveAnyChanges(type, list)
     }
 
     public static GetLoadOrder(type: GameType, identifier: string): number {
-        // TODO - implement getting load order of identified mod
-        return 0
+        const list: Array<ModData> = ModManager.Load(type)
+        if (list.length == 0)
+            throw new Error()
+
+        const mod: ModData = ModManager.Find(list, identifier)
+        if (mod == null || IsEmptyOrNull(mod))
+            throw new Error()
+
+
+        return mod.LoadOrder
     }
 
-    public static Enable(type: GameType, identifier: string) {
-        // TODO - set active state of identified mod
+    public static Enable(type: GameType, identifier: string, isEnabled: boolean) {
+        let list: Array<ModData> = ModManager.Load(type)
+        if (list.length == 0)
+            throw new Error()
+
+        const mod: ModData = ModManager.Find(list, identifier)
+        if (mod == null || IsEmptyOrNull(mod))
+            throw new Error()
+
+        if (mod.IsEnabled == isEnabled)
+            return
+
+        mod.IsEnabled = isEnabled
+        const containsValidPaks: boolean = REEngine.HasValidPatchPaks(mod)
+
+        if (isEnabled) {
+            if (containsValidPaks) {
+                list = REEngine.Patch(list)
+            }
+
+            ModManager.Install(type, mod)
+        } else {
+            ModManager.Uninstall(type, mod)
+
+            if (containsValidPaks) {
+                list = REEngine.Patch(list)
+            }
+        }
+
+        ModManager.SaveAnyChanges(type, list)
     }
 
     private static Install(type: GameType, mod: ModData) {
-        // TODO - implement install action
+        if (fs.existsSync(SettingsManager.GetGamePath(type))) {
+            mod.Files.forEach(file => {
+                fs.copyFileSync(file.SourcePath, file.InstallPath)
+            })
+        }
     }
 
     private static Uninstall(type: GameType, mod: ModData) {
-        // TODO - implement uninstall action
+        if (fs.existsSync(SettingsManager.GetGamePath(type))) {
+            mod.Files.forEach(file => {
+                if (fs.existsSync(file.InstallPath)) {
+                    try {
+                        fs.rmSync(file.InstallPath)
+                    } catch (e) {
+                        throw e
+                    }
+                }
+            })
+
+            CleanEmptyDirectories(SettingsManager.GetGamePath(type))
+        }
     }
 
     private static Delete(type: GameType, identifier: string) {
-        // TODO - implement delete action
+        let list: Array<ModData> = ModManager.Load(type)
+        if (list.length == 0)
+            throw new Error()
+
+        const mod: ModData = ModManager.Find(list, identifier)
+        if (mod == null || IsEmptyOrNull(mod))
+            throw new Error()
+
+        ModManager.Enable(type, mod.Hash, false)
+
+        if (fs.existsSync(mod.BasePath)) {
+            try {
+                fs.rmSync(mod.BasePath, { recursive: true })
+            } catch (e) {
+                throw e
+            }
+        }
+
+        list = list.filter(i => i == ModManager.Find(list, identifier))
+        ModManager.Save(type, list)
+
+        CleanEmptyDirectories(Globals.MODS_FOLDER)
     }
 }

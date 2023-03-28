@@ -1,5 +1,6 @@
 import * as fs from "fs"
 import * as path from "path"
+import { GameType } from "../Enums/GameType"
 import { Globals } from "../Globals"
 import { SettingsData } from "../Interfaces/ISettingsData"
 import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
@@ -24,5 +25,9 @@ export abstract class SettingsManager {
         }
 
         return <SettingsData>{}
+    }
+
+    public static GetGamePath(type: GameType): string {
+        throw new Error()
     }
 }
