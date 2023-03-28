@@ -34,7 +34,7 @@ export function ProcessDirectory(directory: string, outputFile: string = "MyMod.
                 text = text.slice(1)
             }
             
-            let hash: number = MurMurHashV3(text.toLocaleUpperCase(), 4294967295)
+            let hash: number = MurMurHashV3(text.toLocaleLowerCase(), 4294967295)
             let hash2: number = MurMurHashV3(text.toLocaleUpperCase(), 4294967295)
             let buf2: Buffer = fs.readFileSync(obj)
             
