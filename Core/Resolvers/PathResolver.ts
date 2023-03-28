@@ -1,4 +1,6 @@
 import * as path from "path"
+import { GameType } from "../Enums/GameType"
+import GameTypeHelper from "../Enums/GameTypeHelper"
 
 export default class PathResolver {
     private static _MOD_DIR: string = "./Mods/"
@@ -29,11 +31,15 @@ export default class PathResolver {
         return path.join(PathResolver._DATA_DIR, PathResolver._SETTINGS_FILE)
     }
 
-    static INDEX_PATH(sub: string): string {
-        return path.join(PathResolver._DATA_DIR, sub, PathResolver._INDEX_FILE)
+    static INDEX_PATH(type: GameType): string {
+        return path.join(PathResolver._DATA_DIR, GameTypeHelper.Path(type), PathResolver._INDEX_FILE)
     }
 
-    static MOD_PATH(sub: string): string {
-        return path.join(PathResolver._MOD_DIR, sub) 
+    static MOD_PATH(type: GameType): string {
+        return path.join(PathResolver._MOD_DIR, GameTypeHelper.Path(type)) 
+    }
+
+    static DOWNLOAD_PATH(type: GameType): string {
+        return path.join(PathResolver._DOWNLOAD_DIR, GameTypeHelper.Path(type)) 
     }
 }

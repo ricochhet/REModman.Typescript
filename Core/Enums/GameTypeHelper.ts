@@ -1,30 +1,31 @@
 import { GameType } from "./GameType"
-import { Globals } from "../Globals";
+import EnumError from "../Errors/EnumError"
+import * as Strings from "./GameTypeStrings"
 
 export default abstract class GameTypeHelper {
-    public static GetModFolder(type: GameType) {
+    public static Path(type: GameType) {
         switch (type) {
             case GameType.None:
-                throw new Error()
+                throw new EnumError("GameType selected none", "GameType switch-case selected None")
             case GameType.MonsterHunterRise:
-                return Globals.MONSTER_HUNTER_RISE_MOD_FOLDER
+                return Strings.MONSTER_HUNTER_RISE_MOD_FOLDER
             case GameType.MonsterHunterWorld:
-                return Globals.MONSTER_HUNTER_WORLD_MOD_FOLDER
+                return Strings.MONSTER_HUNTER_WORLD_MOD_FOLDER
             default:
-                throw new Error()
+                throw new EnumError("GameType", "Enum defaulted")
         }
     }
 
-    public static GetProcName(type: GameType) {
+    public static Proc(type: GameType) {
         switch (type) {
             case GameType.None:
-                throw new Error()
+                throw new EnumError("GameType selected none", "GameType switch-case selected None")
             case GameType.MonsterHunterRise:
-                return Globals.MONSTER_HUNTER_RISE_PROC_NAME
+                return Strings.MONSTER_HUNTER_RISE_PROC_NAME
             case GameType.MonsterHunterWorld:
-                return Globals.MONSTER_HUNTER_WORLD_PROC_NAME
+                return Strings.MONSTER_HUNTER_WORLD_PROC_NAME
             default:
-                throw new Error()
+                throw new EnumError("GameType", "Enum defaulted")
         }
     }
 }

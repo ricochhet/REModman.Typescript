@@ -1,15 +1,12 @@
 import * as fs from "fs"
-import * as path from "path"
-import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
-import { EnumHelper } from "../Enums/EnumHelper"
-import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
 import SettingsManager from "./SettingsManager"
+import PathResolver from "../Resolvers/PathResolver"
+import EnsureDirectoryExistence from "../Utils/EnsureDirectoryExistence"
 
 export default abstract class DataManager {
     public static CreateIndex(type: GameType) {
-        const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
-        const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
+        const file: string = PathResolver.INDEX_PATH(type)
 
         if (!fs.existsSync(file)) {
             EnsureDirectoryExistence(file)
@@ -18,7 +15,7 @@ export default abstract class DataManager {
     }
 
     public static CreateSettings() {
-        if (!fs.existsSync(path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE))) {
+        if (!fs.existsSync(PathResolver.SETTINGS_PATH)) {
             SettingsManager.Save({
                 LastSelectedGame: GameType.None,
                 GamePaths: new Map<string, string>
@@ -27,7 +24,7 @@ export default abstract class DataManager {
     }
 
     public static CreateModsFolder(type: GameType) {
-        const folder: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.MOD_PATH(type)
 
         if (!fs.existsSync(folder)) {
             fs.mkdirSync(folder)
@@ -35,7 +32,7 @@ export default abstract class DataManager {
     }
 
     public static CreateDownloadsFolder(type: GameType) {
-        const folder: string = path.join(Globals.DOWNLOADS_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.DOWNLOAD_PATH(type)
 
         if (!fs.existsSync(folder)) {
             fs.mkdirSync(folder)
@@ -43,8 +40,7 @@ export default abstract class DataManager {
     }
 
     public static DeleteIndex(type: GameType) {
-        const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
-        const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
+        const file: string = PathResolver.INDEX_PATH(type)
 
         if (fs.existsSync(file)) {
             fs.rmSync(file)
@@ -52,7 +48,7 @@ export default abstract class DataManager {
     }
 
     public static DeleteSettings() {
-        const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
+        const file: string = PathResolver.SETTINGS_PATH
 
         if (fs.existsSync(file)) {
             fs.rmSync(file)
@@ -60,13 +56,13 @@ export default abstract class DataManager {
     }
 
     public static DeleteDataFolder() {
-        if (fs.existsSync(Globals.DATA_FOLDER)) {
-            fs.rmSync(Globals.DATA_FOLDER)
+        if (fs.existsSync(PathResolver.DATA_DIR)) {
+            fs.rmSync(PathResolver.DATA_DIR)
         }
     }
 
     public static DeleteGameDataFolder(type: GameType) {
-        const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.MOD_PATH(type)
 
         if (fs.existsSync(folder)) {
             fs.rmSync(folder)
@@ -74,8 +70,7 @@ export default abstract class DataManager {
     }
 
     public static IndexFileExists(type: GameType): boolean {
-        const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
-        const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
+        const file: string = PathResolver.INDEX_PATH(type)
 
         if (fs.existsSync(file)) {
             return true
@@ -85,7 +80,7 @@ export default abstract class DataManager {
     }
 
     public static SettingsFileExists(): boolean {
-        const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
+        const file: string = PathResolver.SETTINGS_PATH
 
         if (fs.existsSync(file)) {
             return true
@@ -95,7 +90,7 @@ export default abstract class DataManager {
     }
 
     public static DataFolderExists(type: GameType): boolean {
-        const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.MOD_PATH(type)
 
         if (fs.existsSync(folder)) {
             return true
@@ -105,7 +100,7 @@ export default abstract class DataManager {
     }
 
     public static ModsFolderExists(type: GameType): boolean {
-        const folder: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.MOD_PATH(type)
 
         if (fs.existsSync(folder)) {
             return true
@@ -115,7 +110,7 @@ export default abstract class DataManager {
     }
 
     public static DownloadsFolderExists(type: GameType): boolean {
-        const folder: string = path.join(Globals.DOWNLOADS_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.DOWNLOAD_PATH(type)
 
         if (fs.existsSync(folder)) {
             return true
@@ -125,7 +120,7 @@ export default abstract class DataManager {
     }
 
     public static GetModsFolderPath(type: GameType): string {
-        const folder: string = path.join(Globals.MODS_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.MOD_PATH(type)
 
         if (fs.existsSync(folder)) {
             return folder
@@ -135,7 +130,7 @@ export default abstract class DataManager {
     }
 
     public static GetDownloadsFolderPath(type: GameType): string {
-        const folder: string = path.join(Globals.DOWNLOADS_FOLDER, EnumHelper.GetModFolder(type))
+        const folder: string = PathResolver.DOWNLOAD_PATH(type)
 
         if (fs.existsSync(folder)) {
             return folder

@@ -1,8 +1,6 @@
 import * as fs from "fs"
 import * as path from "path"
-import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
-import GameTypeHelper from "../Enums/GameTypeHelper"
 import { ModData } from "../Interfaces/IModData"
 import EnsureDirectoryExistence from "../Utils/EnsureDirectoryExistence"
 import { GetDirectories, GetFiles, WalkDirectory } from "../Utils/GetDirectories"
@@ -13,12 +11,11 @@ import { FileSha256, Sha256 } from "../Utils/Sha256"
 import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
 import SettingsManager from "./SettingsManager"
 import { CleanEmptyDirectories } from "../Utils/CleanEmptyDirectories"
+import PathResolver from "../Resolvers/PathResolver"
 
 export default abstract class ModManager {
     private static Save(type: GameType, list: Array<ModData>) {
-        const folder: string = path.join(Globals.DATA_FOLDER, GameTypeHelper.GetModFolder(type))
-        const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
-
+        const file: string = PathResolver.INDEX_PATH(type)
         const sorted: Array<ModData> = list.sort(i => i.LoadOrder)
 
         EnsureDirectoryExistence(file)
@@ -26,9 +23,8 @@ export default abstract class ModManager {
     }
 
     public static Load(type: GameType): Array<ModData> {
-        if (fs.existsSync(Globals.DATA_FOLDER)) {
-            const folder: string = path.join(Globals.DATA_FOLDER, GameTypeHelper.GetModFolder(type))
-            const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
+        if (fs.existsSync(PathResolver.DATA_DIR)) {
+            const file: string = PathResolver.INDEX_PATH(type)
 
             if (fs.existsSync(file)) {
                 return <Array<ModData>>JSON.parse(fs.readFileSync(file).toString())
@@ -78,7 +74,8 @@ export default abstract class ModManager {
             throw new Error()
 
         const gameDirectory = SettingsManager.GetGamePath(type)
-        const gameModDirectory: string = path.join(Globals.MODS_FOLDER, GameTypeHelper.GetModFolder(type))
+        const gameModDirectory: string = PathResolver.MOD_PATH(type)
+
         if (fs.existsSync(gameModDirectory)) {
             const modDirectories: string[] = GetDirectories(gameModDirectory)
 
@@ -247,6 +244,6 @@ export default abstract class ModManager {
         list = list.filter(i => i == ModManager.Find(list, identifier))
         ModManager.Save(type, list)
 
-        CleanEmptyDirectories(Globals.MODS_FOLDER)
+        CleanEmptyDirectories(PathResolver.MOD_DIR)
     }
 }
