@@ -73,6 +73,6 @@ export function ProcessDirectory(directory: string, outputFile: string = "MyMod.
             buf = new DynamicBuffer(buf2)
         })
 
-        fs.writeFileSync("./Tests/TestItemFile.pak", buf.toBuffer())
+        fs.writeFileSync(outputFile, buf.toBuffer())
     }
 }
