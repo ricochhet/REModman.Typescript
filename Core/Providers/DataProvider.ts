@@ -1,21 +1,20 @@
-import * as fs from "fs"
 import { GameType } from "../Enums/GameType"
-import SettingsManager from "./SettingsManager"
+import FsProvider from "./Generic/FsProvider"
+import SettingsManager from "./SettingsProvider"
 import PathResolver from "../Resolvers/PathResolver"
-import EnsureDirectoryExistence from "../Utils/EnsureDirectoryExistence"
 
 export default abstract class DataManager {
     public static CreateIndex(type: GameType) {
         const file: string = PathResolver.INDEX_PATH(type)
 
-        if (!fs.existsSync(file)) {
-            EnsureDirectoryExistence(file)
-            fs.writeFileSync(file, "[]")
+        if (!FsProvider.ExistsSync(file)) {
+            FsProvider.EnsureDirectory(file)
+            FsProvider.WriteFileSync(file, "[]")
         }
     }
 
     public static CreateSettings() {
-        if (!fs.existsSync(PathResolver.SETTINGS_PATH)) {
+        if (!FsProvider.ExistsSync(PathResolver.SETTINGS_PATH)) {
             SettingsManager.Save({
                 LastSelectedGame: GameType.None,
                 GamePaths: new Map<string, string>
@@ -26,103 +25,73 @@ export default abstract class DataManager {
     public static CreateModsFolder(type: GameType) {
         const folder: string = PathResolver.MOD_PATH(type)
 
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder)
+        if (!FsProvider.ExistsSync(folder)) {
+            FsProvider.MkdirSync(folder)
         }
     }
 
     public static CreateDownloadsFolder(type: GameType) {
         const folder: string = PathResolver.DOWNLOAD_PATH(type)
 
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder)
+        if (!FsProvider.ExistsSync(folder)) {
+            FsProvider.MkdirSync(folder)
         }
     }
 
     public static DeleteIndex(type: GameType) {
         const file: string = PathResolver.INDEX_PATH(type)
 
-        if (fs.existsSync(file)) {
-            fs.rmSync(file)
+        if (FsProvider.ExistsSync(file)) {
+            FsProvider.RmSync(file)
         }
     }
 
     public static DeleteSettings() {
         const file: string = PathResolver.SETTINGS_PATH
 
-        if (fs.existsSync(file)) {
-            fs.rmSync(file)
+        if (FsProvider.ExistsSync(file)) {
+            FsProvider.RmSync(file)
         }
     }
 
     public static DeleteDataFolder() {
-        if (fs.existsSync(PathResolver.DATA_DIR)) {
-            fs.rmSync(PathResolver.DATA_DIR)
+        if (FsProvider.ExistsSync(PathResolver.DATA_DIR)) {
+            FsProvider.RmSync(PathResolver.DATA_DIR)
         }
     }
 
     public static DeleteGameDataFolder(type: GameType) {
         const folder: string = PathResolver.MOD_PATH(type)
 
-        if (fs.existsSync(folder)) {
-            fs.rmSync(folder)
+        if (FsProvider.ExistsSync(folder)) {
+            FsProvider.RmSync(folder)
         }
     }
 
     public static IndexFileExists(type: GameType): boolean {
-        const file: string = PathResolver.INDEX_PATH(type)
-
-        if (fs.existsSync(file)) {
-            return true
-        }
-
-        return false
+        return FsProvider.ExistsSync(PathResolver.INDEX_PATH(type))
     }
 
     public static SettingsFileExists(): boolean {
-        const file: string = PathResolver.SETTINGS_PATH
-
-        if (fs.existsSync(file)) {
-            return true
-        }
-
-        return false
+        return FsProvider.ExistsSync(PathResolver.SETTINGS_PATH)
     }
 
     public static DataFolderExists(type: GameType): boolean {
-        const folder: string = PathResolver.MOD_PATH(type)
-
-        if (fs.existsSync(folder)) {
-            return true
-        }
-
-        return false
+        return FsProvider.ExistsSync(PathResolver.MOD_PATH(type))
     }
 
     public static ModsFolderExists(type: GameType): boolean {
-        const folder: string = PathResolver.MOD_PATH(type)
-
-        if (fs.existsSync(folder)) {
-            return true
-        }
-
-        return false
+        return FsProvider.ExistsSync(PathResolver.MOD_PATH(type))
     }
 
     public static DownloadsFolderExists(type: GameType): boolean {
-        const folder: string = PathResolver.DOWNLOAD_PATH(type)
-
-        if (fs.existsSync(folder)) {
-            return true
-        }
-
-        return false
+        return FsProvider.ExistsSync(PathResolver.DOWNLOAD_PATH(type))
     }
 
     public static GetModsFolderPath(type: GameType): string {
         const folder: string = PathResolver.MOD_PATH(type)
 
-        if (fs.existsSync(folder)) {
+        if (FsProvider.ExistsSync(folder)) {
             return folder
         }
 
@@ -132,7 +101,7 @@ export default abstract class DataManager {
     public static GetDownloadsFolderPath(type: GameType): string {
         const folder: string = PathResolver.DOWNLOAD_PATH(type)
 
-        if (fs.existsSync(folder)) {
+        if (FsProvider.ExistsSync(folder)) {
             return folder
         }
 

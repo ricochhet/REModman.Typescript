@@ -1,12 +1,12 @@
 import * as fs from "fs"
-import { SearchType } from "./Enums/SearchType"
+import { SearchType } from "../Enums/SearchType"
+import FileReadError from "../../Errors/FileReadError"
+import FileCopyError from "../../Errors/FileCopyError"
+import UnsafeOpError from "../../Errors/UnsafeOpError"
+import SearchTypeHelper from "../Enums/SearchTypeHelper"
+import FileWriteError from "../../Errors/FileWriteError"
+import FileRemoveError from "../../Errors/FileRemoveError"
 import { CleanEmptyDirectories, EnsureDirectoryExistence } from "./FsProviderUtils"
-import FileReadError from "../Errors/FileReadError"
-import FileWriteError from "../Errors/FileWriteError"
-import FileCopyError from "../Errors/FileCopyError"
-import FileRemoveError from "../Errors/FileRemoveError"
-import UnsafeOpError from "../Errors/UnsafeOpError"
-import SearchTypeHelper from "./Enums/SearchTypeHelper"
 
 export default class FsProvider {
     private static FILE_OP_SAFE_DEF: boolean = true
@@ -55,6 +55,16 @@ export default class FsProvider {
         }
     }
 
+    public static MkdirSync(directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): FileWriteError | undefined {
+        try {
+            if (safety) FsProvider.IsPathSafe(directory)
+            fs.mkdirSync(directory)
+        } catch (e) {
+            const err: Error = <Error>e
+            return new FileWriteError("Failed to write directory", err.message, null)
+        }
+    }
+
     public static RmSync(directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): FileRemoveError | undefined {
         try {
             if (safety) FsProvider.IsPathSafe(directory)
@@ -75,7 +85,7 @@ export default class FsProvider {
         }
     }
 
-    public static CleanDirectory(directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): FileRemoveError | undefined {
+    public static CleanEmptyDirectories(directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): FileRemoveError | undefined {
         try {
             if (safety) FsProvider.IsPathSafe(directory)
             CleanEmptyDirectories(directory)
@@ -86,10 +96,12 @@ export default class FsProvider {
     }
 
     public static ExistsSync(directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): boolean {
+        if (safety) FsProvider.IsPathSafe(directory)
         return fs.existsSync(directory)
     }
 
-    public static Find(type: SearchType, directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): string[] {
+    public static GetPaths(type: SearchType, directory: string, safety: boolean = FsProvider.FILE_OP_SAFE_DEF): string[] {
+        if (safety) FsProvider.IsPathSafe(directory)
         return SearchTypeHelper(type, directory)
     }
 }

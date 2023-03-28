@@ -1,33 +1,32 @@
 import * as fs from "fs"
 import * as path from "path"
-import { GameType } from "../Enums/GameType"
-import { ModData } from "../Interfaces/IModData"
-import EnsureDirectoryExistence from "../Utils/EnsureDirectoryExistence"
-import { GetDirectories, GetFiles, WalkDirectory } from "../Utils/GetDirectories"
-import { ModFile } from "../Interfaces/IModFile"
 import { REEngine } from "../Data/REEngine"
 import { IsSafe } from "../Utils/FileCheck"
+import { GameType } from "../Enums/GameType"
+import FsProvider from "./Generic/FsProvider"
+import { SearchType } from "./Enums/SearchType"
+import { ModData } from "../Interfaces/IModData"
+import { ModFile } from "../Interfaces/IModFile"
+import SettingsManager from "./SettingsProvider"
+import PathResolver from "../Resolvers/PathResolver"
 import { FileSha256, Sha256 } from "../Utils/Sha256"
 import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
-import SettingsManager from "./SettingsManager"
-import { CleanEmptyDirectories } from "../Utils/CleanEmptyDirectories"
-import PathResolver from "../Resolvers/PathResolver"
 
 export default abstract class ModManager {
     private static Save(type: GameType, list: Array<ModData>) {
         const file: string = PathResolver.INDEX_PATH(type)
         const sorted: Array<ModData> = list.sort(i => i.LoadOrder)
 
-        EnsureDirectoryExistence(file)
-        fs.writeFileSync(file, JSON.stringify(sorted))
+        FsProvider.EnsureDirectory(file)
+        FsProvider.WriteFileSync(file, JSON.stringify(sorted))
     }
 
     public static Load(type: GameType): Array<ModData> {
-        if (fs.existsSync(PathResolver.DATA_DIR)) {
+        if (FsProvider.ExistsSync(PathResolver.DATA_DIR)) {
             const file: string = PathResolver.INDEX_PATH(type)
 
             if (fs.existsSync(file)) {
-                return <Array<ModData>>JSON.parse(fs.readFileSync(file).toString())
+                return <Array<ModData>>JSON.parse(FsProvider.ReadFileSync(file).toString())
             }
 
             return <Array<ModData>>[]
@@ -77,16 +76,16 @@ export default abstract class ModManager {
         const gameModDirectory: string = PathResolver.MOD_PATH(type)
 
         if (fs.existsSync(gameModDirectory)) {
-            const modDirectories: string[] = GetDirectories(gameModDirectory)
+            const modDirectories: string[] = FsProvider.GetPaths(SearchType.TopDirectoriesOnly, gameModDirectory)
 
             modDirectories.forEach(modDirectory => {
                 let hash: string = ""
                 const modFiles: Array<ModFile> = []
-                const modItems: string[] = GetDirectories(modDirectory)
+                const modItems: string[] = FsProvider.GetPaths(SearchType.TopDirectoriesOnly, modDirectory)
 
                 modItems.forEach(modItem => {
                     if (REEngine.IsNatives(path.basename(modItem)) || REEngine.IsREF(path.basename(modItem))) {
-                        const files = WalkDirectory(modItem)
+                        const files = FsProvider.GetPaths(SearchType.SearchAllFiles, modItem)
 
                         files.forEach(file => {
                             if (IsSafe(file)) {
@@ -104,7 +103,7 @@ export default abstract class ModManager {
                     }
                 })
 
-                const files: string[] = GetFiles(modDirectory)
+                const files: string[] = FsProvider.GetPaths(SearchType.TopFilesOnly, modDirectory)
                 files.forEach(file => {
                     if (IsSafe(file) && REEngine.IsValidPatchPak(file)) {
                         const installPath = path.join(gameDirectory, REEngine.InstallPath(file))
@@ -218,7 +217,7 @@ export default abstract class ModManager {
                 }
             })
 
-            CleanEmptyDirectories(SettingsManager.GetGamePath(type))
+            FsProvider.CleanEmptyDirectories(SettingsManager.GetGamePath(type))
         }
     }
 
@@ -244,6 +243,6 @@ export default abstract class ModManager {
         list = list.filter(i => i == ModManager.Find(list, identifier))
         ModManager.Save(type, list)
 
-        CleanEmptyDirectories(PathResolver.MOD_DIR)
+        FsProvider.CleanEmptyDirectories(PathResolver.MOD_DIR)
     }
 }

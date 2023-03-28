@@ -1,25 +1,25 @@
-import * as fs from "fs"
 import * as path from "path"
-import { GameType } from "../Enums/GameType"
 import { Globals } from "../Globals"
+import { GameType } from "../Enums/GameType"
+import FsProvider from "./Generic/FsProvider"
 import { SettingsData } from "../Interfaces/ISettingsData"
-import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
 import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
+import PathResolver from "../Resolvers/PathResolver"
 
 export default abstract class SettingsManager {
     public static Save(settings: SettingsData) {
-        const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
+        const file: string = PathResolver.SETTINGS_PATH
 
-        EnsureDirectoryExistence(file)
-        fs.writeFileSync(file, JSON.stringify(settings, null, 2))
+        FsProvider.EnsureDirectory(file)
+        FsProvider.WriteFileSync(file, JSON.stringify(settings, null, 2))
     }
 
     public static Load(): SettingsData {
-        if (fs.existsSync(Globals.DATA_FOLDER)) {
-            const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
+        if (FsProvider.ExistsSync(Globals.DATA_FOLDER)) {
+            const file: string = PathResolver.SETTINGS_PATH
 
-            if (fs.existsSync(file)) {
-                return <SettingsData>JSON.parse(fs.readFileSync(file).toString())
+            if (FsProvider.ExistsSync(file)) {
+                return <SettingsData>JSON.parse(FsProvider.ReadFileSync(file).toString())
             }
 
             return <SettingsData>{}
