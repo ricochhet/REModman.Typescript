@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
 
-export function EnsureDirectoryExistence(filePath: string) {
+export default function EnsureDirectoryExistence(filePath: string) {
     const directoryName: string = path.dirname(filePath)
 
     if (fs.existsSync(directoryName)) {

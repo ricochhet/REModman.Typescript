@@ -4,17 +4,17 @@ import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
 import { EnumHelper } from "../Enums/EnumHelper"
 import { ModData } from "../Interfaces/IModData"
-import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
+import EnsureDirectoryExistence from "../Utils/EnsureDirectoryExistence"
 import { GetDirectories, GetFiles, WalkDirectory } from "../Utils/GetDirectories"
 import { ModFile } from "../Interfaces/IModFile"
 import { REEngine } from "../Data/REEngine"
 import { IsSafe } from "../Utils/FileCheck"
 import { FileSha256, Sha256 } from "../Utils/Sha256"
 import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
-import { SettingsManager } from "./SettingsManager"
+import SettingsManager from "./SettingsManager"
 import { CleanEmptyDirectories } from "../Utils/CleanEmptyDirectories"
 
-export abstract class ModManager {
+export default abstract class ModManager {
     private static Save(type: GameType, list: Array<ModData>) {
         const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
         const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
@@ -215,6 +215,7 @@ export abstract class ModManager {
                     try {
                         fs.rmSync(file.InstallPath)
                     } catch (e) {
+                        const err: Error = <Error>e
                         throw e
                     }
                 }

@@ -4,8 +4,9 @@ import { GameType } from "../Enums/GameType"
 import { Globals } from "../Globals"
 import { SettingsData } from "../Interfaces/ISettingsData"
 import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
+import { IsEmptyOrNull } from "../Utils/IsEmptyObject"
 
-export abstract class SettingsManager {
+export default abstract class SettingsManager {
     public static Save(settings: SettingsData) {
         const file: string = path.join(Globals.DATA_FOLDER, Globals.SETTINGS_FILE)
 
@@ -28,6 +29,14 @@ export abstract class SettingsManager {
     }
 
     public static GetGamePath(type: GameType): string {
+        const settings: SettingsData = SettingsManager.Load()
+        if (settings == null || IsEmptyOrNull(settings))
+            throw new Error()
+
+        if (settings.GamePaths.has(type.toString())) {
+            return path.dirname(settings.GamePaths[type.toString()])
+        }
+
         throw new Error()
     }
 }

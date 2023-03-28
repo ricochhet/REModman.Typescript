@@ -4,9 +4,9 @@ import { Globals } from "../Globals"
 import { GameType } from "../Enums/GameType"
 import { EnumHelper } from "../Enums/EnumHelper"
 import { EnsureDirectoryExistence } from "../Utils/EnsureDirectoryExistence"
-import { SettingsManager } from "./SettingsManager"
+import SettingsManager from "./SettingsManager"
 
-export abstract class DataManager {
+export default abstract class DataManager {
     public static CreateIndex(type: GameType) {
         const folder: string = path.join(Globals.DATA_FOLDER, EnumHelper.GetModFolder(type))
         const file: string = path.join(folder, Globals.MOD_INDEX_FILE)
