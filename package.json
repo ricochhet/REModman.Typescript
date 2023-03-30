@@ -1,25 +1,25 @@
 {
-  "name": "remod.node",
-  "version": "1.0.0",
-  "description": "NodeJS implementation of REMod",
-  "main": "index.js",
-  "scripts": {
-    "prettier": "prettier --config .prettierrc --write .",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ricochhet/REMod.Node.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ricochhet/REMod.Node/issues"
-  },
-  "homepage": "https://github.com/ricochhet/REMod.Node#readme",
-  "devDependencies": {
-    "@types/node": "^18.15.10",
-    "prettier": "^2.8.7",
-    "typescript": "^5.0.2"
-  }
+    "name": "remod.node",
+    "version": "1.0.0",
+    "description": "NodeJS implementation of REMod",
+    "main": "index.js",
+    "scripts": {
+        "prettier": "prettier --config .prettierrc --write .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ricochhet/REMod.Node.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ricochhet/REMod.Node/issues"
+    },
+    "homepage": "https://github.com/ricochhet/REMod.Node#readme",
+    "devDependencies": {
+        "@types/node": "^18.15.10",
+        "prettier": "^2.8.7",
+        "typescript": "^5.0.2"
+    }
 }

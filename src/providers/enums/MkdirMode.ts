@@ -1,4 +1,4 @@
 export enum MkdirMode {
-  ANY_EXISTENCE,
-  NO_EXISTENCE,
+    ANY_EXISTENCE,
+    NO_EXISTENCE,
 }

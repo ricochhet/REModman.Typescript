@@ -1,5 +1,5 @@
 export enum GameType {
-  None,
-  MonsterHunterRise,
-  MonsterHunterWorld,
+    None,
+    MonsterHunterRise,
+    MonsterHunterWorld,
 }

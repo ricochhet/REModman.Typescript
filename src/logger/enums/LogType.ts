@@ -1,8 +1,8 @@
 export enum LogType {
-  Debug,
-  Info,
-  Warn,
-  Native,
-  Error,
-  Benchmark,
+    Debug,
+    Info,
+    Warn,
+    Native,
+    Error,
+    Benchmark,
 }

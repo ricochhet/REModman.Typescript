@@ -38,18 +38,18 @@ import { DynamicBuffer } from './DynamicBuffer';
  * ```
  */
 export abstract class DynamicBufferIterator<T> implements IterableIterator<T> {
-  protected buf: DynamicBuffer;
+    protected buf: DynamicBuffer;
 
-  protected index: number;
+    protected index: number;
 
-  constructor(buf: DynamicBuffer) {
-    this.buf = buf;
-    this.index = 0;
-  }
+    constructor(buf: DynamicBuffer) {
+        this.buf = buf;
+        this.index = 0;
+    }
 
-  [Symbol.iterator](): IterableIterator<T> {
-    return this;
-  }
+    [Symbol.iterator](): IterableIterator<T> {
+        return this;
+    }
 
-  abstract next(): IteratorResult<T, any>;
+    abstract next(): IteratorResult<T, any>;
 }

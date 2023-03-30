@@ -8,107 +8,111 @@ import { IsNullOrEmpty } from '../Utils/IsNullOrEmpty';
 import Cache from './ManagerCache';
 
 export default abstract class ModInstaller {
-  public static SetLoadOrder(
-    type: GameType,
-    identifier: string,
-    order: number,
-  ) {
-    const list: Array<ModData> = Cache.Load(type);
-    if (list.length == 0) throw new Error();
+    public static SetLoadOrder(
+        type: GameType,
+        identifier: string,
+        order: number,
+    ) {
+        const list: Array<ModData> = Cache.Load(type);
+        if (list.length == 0) throw new Error();
 
-    const mod: ModData = Cache.Find(list, identifier);
-    if (mod == null || IsNullOrEmpty(mod)) throw new Error();
+        const mod: ModData = Cache.Find(list, identifier);
+        if (mod == null || IsNullOrEmpty(mod)) throw new Error();
 
-    if (mod.LoadOrder == order) return;
+        if (mod.LoadOrder == order) return;
 
-    mod.LoadOrder = order;
-    Cache.SaveAnyChanges(type, list);
-  }
-
-  public static GetLoadOrder(type: GameType, identifier: string): number {
-    const list: Array<ModData> = Cache.Load(type);
-    if (list.length == 0) throw new Error();
-
-    const mod: ModData = Cache.Find(list, identifier);
-    if (mod == null || IsNullOrEmpty(mod)) throw new Error();
-
-    return mod.LoadOrder;
-  }
-
-  public static Enable(type: GameType, identifier: string, isEnabled: boolean) {
-    let list: Array<ModData> = Cache.Load(type);
-    if (list.length == 0) throw new Error();
-
-    const mod: ModData = Cache.Find(list, identifier);
-    if (mod == null || IsNullOrEmpty(mod)) throw new Error();
-
-    if (mod.IsEnabled == isEnabled) return;
-
-    mod.IsEnabled = isEnabled;
-    const containsValidPaks: boolean = REEngine.HasValidPatchPaks(mod);
-
-    if (isEnabled) {
-      if (containsValidPaks) {
-        list = REEngine.Patch(list);
-      }
-
-      ModInstaller.Install(type, mod);
-    } else {
-      ModInstaller.Uninstall(type, mod);
-
-      if (containsValidPaks) {
-        list = REEngine.Patch(list);
-      }
+        mod.LoadOrder = order;
+        Cache.SaveAnyChanges(type, list);
     }
 
-    Cache.SaveAnyChanges(type, list);
-  }
+    public static GetLoadOrder(type: GameType, identifier: string): number {
+        const list: Array<ModData> = Cache.Load(type);
+        if (list.length == 0) throw new Error();
 
-  private static Install(type: GameType, mod: ModData) {
-    if (FsProvider.ExistsSync(ManagerSettings.GetGamePath(type))) {
-      mod.Files.forEach(file => {
-        FsProvider.CopyFileSync(file.SourcePath, file.InstallPath);
-      });
+        const mod: ModData = Cache.Find(list, identifier);
+        if (mod == null || IsNullOrEmpty(mod)) throw new Error();
+
+        return mod.LoadOrder;
     }
-  }
 
-  private static Uninstall(type: GameType, mod: ModData) {
-    if (FsProvider.ExistsSync(ManagerSettings.GetGamePath(type))) {
-      mod.Files.forEach(file => {
-        if (FsProvider.ExistsSync(file.InstallPath)) {
-          try {
-            FsProvider.RmSync(file.InstallPath, {});
-          } catch (e) {
-            const err: Error = <Error>e;
-            throw e;
-          }
+    public static Enable(
+        type: GameType,
+        identifier: string,
+        isEnabled: boolean,
+    ) {
+        let list: Array<ModData> = Cache.Load(type);
+        if (list.length == 0) throw new Error();
+
+        const mod: ModData = Cache.Find(list, identifier);
+        if (mod == null || IsNullOrEmpty(mod)) throw new Error();
+
+        if (mod.IsEnabled == isEnabled) return;
+
+        mod.IsEnabled = isEnabled;
+        const containsValidPaks: boolean = REEngine.HasValidPatchPaks(mod);
+
+        if (isEnabled) {
+            if (containsValidPaks) {
+                list = REEngine.Patch(list);
+            }
+
+            ModInstaller.Install(type, mod);
+        } else {
+            ModInstaller.Uninstall(type, mod);
+
+            if (containsValidPaks) {
+                list = REEngine.Patch(list);
+            }
         }
-      });
 
-      FsProvider.CleanEmptyDirectories(ManagerSettings.GetGamePath(type));
-    }
-  }
-
-  private static Delete(type: GameType, identifier: string) {
-    let list: Array<ModData> = Cache.Load(type);
-    if (list.length == 0) throw new Error();
-
-    const mod: ModData = Cache.Find(list, identifier);
-    if (mod == null || IsNullOrEmpty(mod)) throw new Error();
-
-    ModInstaller.Enable(type, mod.Hash, false);
-
-    if (FsProvider.ExistsSync(mod.BasePath)) {
-      try {
-        FsProvider.RmSync(mod.BasePath, { recursive: true });
-      } catch (e) {
-        throw e;
-      }
+        Cache.SaveAnyChanges(type, list);
     }
 
-    list = list.filter(i => i == Cache.Find(list, identifier));
-    Cache.Save(type, list);
+    private static Install(type: GameType, mod: ModData) {
+        if (FsProvider.ExistsSync(ManagerSettings.GetGamePath(type))) {
+            mod.Files.forEach(file => {
+                FsProvider.CopyFileSync(file.SourcePath, file.InstallPath);
+            });
+        }
+    }
 
-    FsProvider.CleanEmptyDirectories(PathResolver.MOD_DIR);
-  }
+    private static Uninstall(type: GameType, mod: ModData) {
+        if (FsProvider.ExistsSync(ManagerSettings.GetGamePath(type))) {
+            mod.Files.forEach(file => {
+                if (FsProvider.ExistsSync(file.InstallPath)) {
+                    try {
+                        FsProvider.RmSync(file.InstallPath, {});
+                    } catch (e) {
+                        const err: Error = <Error>e;
+                        throw e;
+                    }
+                }
+            });
+
+            FsProvider.CleanEmptyDirectories(ManagerSettings.GetGamePath(type));
+        }
+    }
+
+    private static Delete(type: GameType, identifier: string) {
+        let list: Array<ModData> = Cache.Load(type);
+        if (list.length == 0) throw new Error();
+
+        const mod: ModData = Cache.Find(list, identifier);
+        if (mod == null || IsNullOrEmpty(mod)) throw new Error();
+
+        ModInstaller.Enable(type, mod.Hash, false);
+
+        if (FsProvider.ExistsSync(mod.BasePath)) {
+            try {
+                FsProvider.RmSync(mod.BasePath, { recursive: true });
+            } catch (e) {
+                throw e;
+            }
+        }
+
+        list = list.filter(i => i == Cache.Find(list, identifier));
+        Cache.Save(type, list);
+
+        FsProvider.CleanEmptyDirectories(PathResolver.MOD_DIR);
+    }
 }
