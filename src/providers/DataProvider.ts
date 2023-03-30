@@ -1,11 +1,11 @@
-import { GameType } from '../Enums/GameType';
+import { GameType } from '../enums/GameType';
 import FsProvider from './generic/FsProvider';
 import ManagerSettings from '../manager/ManagerSettings';
-import EnumResolver from '../Resolvers/EnumResolver';
+import EnumResolver from '../resolvers/EnumResolver';
 import PathResolver from '../resolvers/PathResolver';
-import { FolderType } from '../resolvers/Enums/FolderType';
 import EnumError from '../errors/EnumError';
-import { FileType } from '../resolvers/Enums/FileType';
+import { FileType } from '../resolvers/enums/FileType';
+import { FolderType } from '../resolvers/enums/FolderType';
 import { MkdirMode } from './enums/MkdirMode';
 import { IDataProviderOptions } from './Interfaces/IDataProviderOptions';
 
@@ -29,10 +29,10 @@ export default abstract class DataProvider {
                     );
                 case FileType.CACHE:
                     FsProvider.EnsureDirectory(
-                        PathResolver.INDEX_PATH(options.Game),
+                        PathResolver.INDEX_PATH(options.Game ?? GameType.None),
                     );
                     FsProvider.WriteFileSync(
-                        PathResolver.INDEX_PATH(options.Game),
+                        PathResolver.INDEX_PATH(options.Game ?? GameType.None),
                         options.Data,
                     );
                 case FileType.SETTINGS:
@@ -47,7 +47,7 @@ export default abstract class DataProvider {
             switch (type) {
                 case FolderType.MODS:
                     FsProvider.MkdirSync(
-                        PathResolver.MOD_PATH(options.Game),
+                        PathResolver.MOD_PATH(options.Game ?? GameType.None),
                         MkdirMode.NO_EXISTENCE,
                     );
                 case FolderType.DATA:
@@ -57,7 +57,9 @@ export default abstract class DataProvider {
                     );
                 case FolderType.DOWNLOADS:
                     FsProvider.MkdirSync(
-                        PathResolver.DOWNLOAD_PATH(options.Game),
+                        PathResolver.DOWNLOAD_PATH(
+                            options.Game ?? GameType.None,
+                        ),
                         MkdirMode.NO_EXISTENCE,
                     );
                 default:

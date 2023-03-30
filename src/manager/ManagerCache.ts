@@ -8,7 +8,7 @@ import PathResolver from '../resolvers/PathResolver';
 import { FileSha256, Sha256 } from '../utils/Sha256';
 import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
 import { SearchType } from '../providers/enums/SearchType';
-import FsProvider from '../providers/Generic/FsProvider';
+import FsProvider from '../providers/generic/FsProvider';
 
 export default abstract class Cache {
     public static Save(type: GameType, list: Array<IModData>) {

@@ -2,7 +2,7 @@ import path from 'path';
 import { GameType } from '../enums/GameType';
 import PathResolver from '../resolvers/PathResolver';
 import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
-import FsProvider from '../providers/Generic/FsProvider';
+import FsProvider from '../providers/generic/FsProvider';
 import { ISettingsData } from '../interfaces/ISettingsData';
 
 export default abstract class ManagerSettings {

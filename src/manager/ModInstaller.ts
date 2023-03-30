@@ -1,10 +1,10 @@
-import { REEngine } from '../Data/REEngine';
-import { GameType } from '../Enums/GameType';
-import FsProvider from '../Providers/Generic/FsProvider';
-import { ModData } from '../Interfaces/IModData';
+import { REEngine } from '../data/REEngine';
+import { GameType } from '../enums/GameType';
+import FsProvider from '../providers/generic/FsProvider';
+import { IModData } from '../interfaces/IModData';
 import ManagerSettings from './ManagerSettings';
-import PathResolver from '../Resolvers/PathResolver';
-import { IsNullOrEmpty } from '../Utils/IsNullOrEmpty';
+import PathResolver from '../resolvers/PathResolver';
+import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
 import Cache from './ManagerCache';
 
 export default abstract class ModInstaller {
@@ -13,10 +13,10 @@ export default abstract class ModInstaller {
         identifier: string,
         order: number,
     ) {
-        const list: Array<ModData> = Cache.Load(type);
+        const list: Array<IModData> = Cache.Load(type);
         if (list.length == 0) throw new Error();
 
-        const mod: ModData = Cache.Find(list, identifier);
+        const mod: IModData = Cache.Find(list, identifier);
         if (mod == null || IsNullOrEmpty(mod)) throw new Error();
 
         if (mod.LoadOrder == order) return;
@@ -26,10 +26,10 @@ export default abstract class ModInstaller {
     }
 
     public static GetLoadOrder(type: GameType, identifier: string): number {
-        const list: Array<ModData> = Cache.Load(type);
+        const list: Array<IModData> = Cache.Load(type);
         if (list.length == 0) throw new Error();
 
-        const mod: ModData = Cache.Find(list, identifier);
+        const mod: IModData = Cache.Find(list, identifier);
         if (mod == null || IsNullOrEmpty(mod)) throw new Error();
 
         return mod.LoadOrder;
@@ -40,10 +40,10 @@ export default abstract class ModInstaller {
         identifier: string,
         isEnabled: boolean,
     ) {
-        let list: Array<ModData> = Cache.Load(type);
+        let list: Array<IModData> = Cache.Load(type);
         if (list.length == 0) throw new Error();
 
-        const mod: ModData = Cache.Find(list, identifier);
+        const mod: IModData = Cache.Find(list, identifier);
         if (mod == null || IsNullOrEmpty(mod)) throw new Error();
 
         if (mod.IsEnabled == isEnabled) return;
@@ -68,7 +68,7 @@ export default abstract class ModInstaller {
         Cache.SaveAnyChanges(type, list);
     }
 
-    private static Install(type: GameType, mod: ModData) {
+    private static Install(type: GameType, mod: IModData) {
         if (FsProvider.ExistsSync(ManagerSettings.GetGamePath(type))) {
             mod.Files.forEach(file => {
                 FsProvider.CopyFileSync(file.SourcePath, file.InstallPath);
@@ -76,7 +76,7 @@ export default abstract class ModInstaller {
         }
     }
 
-    private static Uninstall(type: GameType, mod: ModData) {
+    private static Uninstall(type: GameType, mod: IModData) {
         if (FsProvider.ExistsSync(ManagerSettings.GetGamePath(type))) {
             mod.Files.forEach(file => {
                 if (FsProvider.ExistsSync(file.InstallPath)) {
@@ -94,10 +94,10 @@ export default abstract class ModInstaller {
     }
 
     private static Delete(type: GameType, identifier: string) {
-        let list: Array<ModData> = Cache.Load(type);
+        let list: Array<IModData> = Cache.Load(type);
         if (list.length == 0) throw new Error();
 
-        const mod: ModData = Cache.Find(list, identifier);
+        const mod: IModData = Cache.Find(list, identifier);
         if (mod == null || IsNullOrEmpty(mod)) throw new Error();
 
         ModInstaller.Enable(type, mod.Hash, false);

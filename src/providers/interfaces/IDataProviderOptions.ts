@@ -1,4 +1,4 @@
-import { GameType } from '../../Enums/GameType';
+import { GameType } from '../../enums/GameType';
 
 export interface IDataProviderOptions {
     Game?: GameType;

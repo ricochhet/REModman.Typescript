@@ -1,9 +1,9 @@
 import * as path from 'path';
 import { GameType } from '../enums/GameType';
 import { FileType } from './enums/FileType';
-import { FolderType } from './Enums/FolderType';
+import { FolderType } from './enums/FolderType';
 import GameTypeHelper from '../enums/GameTypeResolver';
-import FsProvider from '../providers/Generic/FsProvider';
+import FsProvider from '../providers/generic/FsProvider';
 import EnumError from '../errors/EnumError';
 
 export default class PathResolver {
@@ -14,6 +14,10 @@ export default class PathResolver {
     private static _LOG_FILE: string = FileType.LOG;
     private static _INDEX_FILE: string = FileType.CACHE;
     private static _SETTINGS_FILE: string = FileType.SETTINGS;
+
+    static get MOD_DIR(): string {
+        return PathResolver._MOD_DIR;
+    }
 
     static get DATA_PATH(): string {
         return PathResolver._DATA_DIR;
