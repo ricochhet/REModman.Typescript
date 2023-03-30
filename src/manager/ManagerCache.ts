@@ -108,7 +108,10 @@ export default abstract class Cache {
                                     gameDirectory,
                                     REEngine.InstallPath(file),
                                 );
-                                const fileHash: string = Checksum.File(ChecksumType.SHA256, file);
+                                const fileHash: string = Checksum.File(
+                                    ChecksumType.SHA256,
+                                    file,
+                                );
                                 hash += fileHash;
 
                                 modFiles.push({
@@ -134,7 +137,10 @@ export default abstract class Cache {
                             gameDirectory,
                             REEngine.InstallPath(file),
                         );
-                        const fileHash: string = Checksum.File(ChecksumType.SHA256, file);
+                        const fileHash: string = Checksum.File(
+                            ChecksumType.SHA256,
+                            file,
+                        );
                         hash += fileHash;
 
                         modFiles.push({
@@ -145,7 +151,10 @@ export default abstract class Cache {
                     }
                 });
 
-                const identifier: string = Checksum.String(ChecksumType.SHA256, hash);
+                const identifier: string = Checksum.String(
+                    ChecksumType.SHA256,
+                    hash,
+                );
                 if (
                     modFiles.length != 0 &&
                     IsNullOrEmpty(Cache.Find(list, identifier))

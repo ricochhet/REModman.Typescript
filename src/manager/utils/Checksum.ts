@@ -11,11 +11,14 @@ export default class Checksum {
             case ChecksumType.MD5:
                 return createHash('md5').update(data).digest('hex');
             default:
-                throw new EnumError("ChecksumType", "default")
+                throw new EnumError('ChecksumType', 'default');
         }
     }
 
     public static File(type: ChecksumType, directory: string) {
-        return Checksum.String(type, FsProvider.ReadFileSync(directory).toString())
+        return Checksum.String(
+            type,
+            FsProvider.ReadFileSync(directory).toString(),
+        );
     }
 }
