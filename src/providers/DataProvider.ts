@@ -1,12 +1,12 @@
 import { GameType } from '../Enums/GameType';
-import FsProvider from './Generic/FsProvider';
-import ManagerSettings from '../Manager/ManagerSettings';
+import FsProvider from './generic/FsProvider';
+import ManagerSettings from '../manager/ManagerSettings';
 import EnumResolver from '../Resolvers/EnumResolver';
-import PathResolver from '../Resolvers/PathResolver';
-import { FolderType } from '../Resolvers/Enums/FolderType';
-import EnumError from '../Errors/EnumError';
-import { FileType } from '../Resolvers/Enums/FileType';
-import { MkdirMode } from './Enums/MkdirMode';
+import PathResolver from '../resolvers/PathResolver';
+import { FolderType } from '../resolvers/Enums/FolderType';
+import EnumError from '../errors/EnumError';
+import { FileType } from '../resolvers/Enums/FileType';
+import { MkdirMode } from './enums/MkdirMode';
 import { IDataProviderOptions } from './Interfaces/IDataProviderOptions';
 
 export default abstract class DataProvider {

@@ -1,53 +1,52 @@
 import path from 'path';
-import { REEngine } from '../Data/REEngine';
-import { IsSafe } from '../Utils/FileCheck';
-import { GameType } from '../Enums/GameType';
+import { REEngine } from '../data/REEngine';
+import { GameType } from '../enums/GameType';
 import ManagerSettings from './ManagerSettings';
-import { ModData } from '../Interfaces/IModData';
-import { ModFile } from '../Interfaces/IModFile';
-import PathResolver from '../Resolvers/PathResolver';
-import { FileSha256, Sha256 } from '../Utils/Sha256';
-import { IsNullOrEmpty } from '../Utils/IsNullOrEmpty';
-import { SearchType } from '../Providers/Enums/SearchType';
-import FsProvider from '../Providers/Generic/FsProvider';
+import { IModData } from '../interfaces/IModData';
+import { IModFile } from '../interfaces/IModFile';
+import PathResolver from '../resolvers/PathResolver';
+import { FileSha256, Sha256 } from '../utils/Sha256';
+import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
+import { SearchType } from '../providers/Enums/SearchType';
+import FsProvider from '../providers/Generic/FsProvider';
 
 export default abstract class Cache {
-  public static Save(type: GameType, list: Array<ModData>) {
+  public static Save(type: GameType, list: Array<IModData>) {
     const file: string = PathResolver.INDEX_PATH(type);
-    const sorted: Array<ModData> = list.sort(i => i.LoadOrder);
+    const sorted: Array<IModData> = list.sort(i => i.LoadOrder);
 
     FsProvider.EnsureDirectory(file);
     FsProvider.WriteFileSync(file, JSON.stringify(sorted));
   }
 
-  public static Load(type: GameType): Array<ModData> {
+  public static Load(type: GameType): Array<IModData> {
     if (FsProvider.ExistsSync(PathResolver.DATA_DIR)) {
       const file: string = PathResolver.INDEX_PATH(type);
 
       if (FsProvider.ExistsSync(file)) {
-        return <Array<ModData>>(
+        return <Array<IModData>>(
           JSON.parse(FsProvider.ReadFileSync(file).toString())
         );
       }
 
-      return <Array<ModData>>[];
+      return <Array<IModData>>[];
     }
 
-    return <Array<ModData>>[];
+    return <Array<IModData>>[];
   }
 
-  public static Find(list: Array<ModData>, identifier: string): ModData {
-    if (list.length == 0 || list.length == undefined) return <ModData>{};
+  public static Find(list: Array<IModData>, identifier: string): IModData {
+    if (list.length == 0 || list.length == undefined) return <IModData>{};
 
-    return list.find(i => i.Hash == identifier) || <ModData>{};
+    return list.find(i => i.Hash == identifier) || <IModData>{};
   }
 
-  public static SaveHashChanges(type: GameType, list: Array<ModData>) {
-    const existing: Array<ModData> | null = Cache.Load(type);
+  public static SaveHashChanges(type: GameType, list: Array<IModData>) {
+    const existing: Array<IModData> | null = Cache.Load(type);
 
     if (existing == null) throw new Error();
 
-    const diffs: Array<ModData> = list.filter(
+    const diffs: Array<IModData> = list.filter(
       p => !existing.every(l => p.Hash == l.Hash),
     );
     if (diffs.length != 0) {
@@ -55,12 +54,12 @@ export default abstract class Cache {
     }
   }
 
-  public static SaveAnyChanges(type: GameType, list: Array<ModData>) {
-    const existing: Array<ModData> | null = Cache.Load(type);
+  public static SaveAnyChanges(type: GameType, list: Array<IModData>) {
+    const existing: Array<IModData> | null = Cache.Load(type);
 
     if (existing == null) throw new Error();
 
-    const diffs: Array<ModData> = list.filter(
+    const diffs: Array<IModData> = list.filter(
       p =>
         !existing.every(l => p.Hash == l.Hash) || existing.every(l => p != l),
     );
@@ -69,8 +68,8 @@ export default abstract class Cache {
     }
   }
 
-  public static Build(type: GameType): Array<ModData> {
-    const list: Array<ModData> = Cache.Load(type);
+  public static Build(type: GameType): Array<IModData> {
+    const list: Array<IModData> = Cache.Load(type);
 
     if (list == null) throw new Error();
 
@@ -85,7 +84,7 @@ export default abstract class Cache {
 
       modDirectories.forEach(modDirectory => {
         let hash: string = '';
-        const modFiles: Array<ModFile> = [];
+        const modFiles: Array<IModFile> = [];
         const modItems: string[] = FsProvider.GetPaths(
           SearchType.TopDirectoriesOnly,
           modDirectory,

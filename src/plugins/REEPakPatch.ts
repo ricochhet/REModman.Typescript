@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { WalkDirectory } from '../Utils/GetDirectories';
-import { DynamicBuffer } from './Buffer/DynamicBuffer';
+import { WalkDirectory } from '../utils/GetDirectories';
+import { DynamicBuffer } from './buffer/DynamicBuffer';
 import { MurMurHashV3 } from './MurMurHash';
 import { FileEntry } from './FileEntry';
 

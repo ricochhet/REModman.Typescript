@@ -1,5 +1,5 @@
 import { LogType } from './LogType';
-import { FgRed, FgWhite, FgYellow, FgGray } from '../Utils/ConsoleColors';
+import { FgRed, FgWhite, FgYellow, FgGray } from '../utils/ConsoleColors';
 
 export abstract class LogTypeHelper {
   public static Color(type: LogType): string {

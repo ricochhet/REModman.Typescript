@@ -1,9 +1,9 @@
 import path from 'path';
-import { GameType } from '../Enums/GameType';
-import PathResolver from '../Resolvers/PathResolver';
-import { IsNullOrEmpty } from '../Utils/IsNullOrEmpty';
-import FsProvider from '../Providers/Generic/FsProvider';
-import { ISettingsData } from '../Interfaces/ISettingsData';
+import { GameType } from '../enums/GameType';
+import PathResolver from '../resolvers/PathResolver';
+import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
+import FsProvider from '../providers/Generic/FsProvider';
+import { ISettingsData } from '../interfaces/ISettingsData';
 
 export default abstract class ManagerSettings {
   public static Save(settings: ISettingsData) {

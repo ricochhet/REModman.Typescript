@@ -1,5 +1,5 @@
 import { GameType } from './GameType';
-import EnumError from '../Errors/EnumError';
+import EnumError from '../errors/EnumError';
 import * as Strings from './GameTypeStrings';
 
 export default abstract class GameTypeHelper {

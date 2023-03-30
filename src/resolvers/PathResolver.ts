@@ -1,10 +1,10 @@
 import * as path from 'path';
-import { GameType } from '../Enums/GameType';
-import { FileType } from './Enums/FileType';
+import { GameType } from '../enums/GameType';
+import { FileType } from './enums/FileType';
 import { FolderType } from './Enums/FolderType';
-import GameTypeHelper from '../Enums/GameTypeResolver';
-import FsProvider from '../Providers/Generic/FsProvider';
-import EnumError from '../Errors/EnumError';
+import GameTypeHelper from '../enums/GameTypeResolver';
+import FsProvider from '../providers/Generic/FsProvider';
+import EnumError from '../errors/EnumError';
 
 export default class PathResolver {
   private static _MOD_DIR: string = FolderType.MODS;

@@ -1,7 +1,7 @@
-import { LogType } from './Enums/LogType';
-import { LogTypeHelper } from './Enums/LogTypeHelper';
-import DataProvider from '../Providers/DataProvider';
-import { FileType } from '../Resolvers/Enums/FileType';
+import { LogType } from './enums/LogType';
+import { LogTypeHelper } from './enums/LogTypeHelper';
+import DataProvider from '../providers/DataProvider';
+import { FileType } from '../resolvers/Enums/FileType';
 
 export default class Logger {
   private static logList: string[] = [];

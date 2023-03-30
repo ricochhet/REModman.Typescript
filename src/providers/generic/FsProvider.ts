@@ -1,17 +1,17 @@
 import * as fs from 'fs';
-import { SearchType } from '../Enums/SearchType';
-import FileReadError from '../../Errors/FileReadError';
-import FileCopyError from '../../Errors/FileCopyError';
-import UnsafeOpError from '../../Errors/UnsafeOpError';
+import { SearchType } from '../enums/SearchType';
+import FileReadError from '../../errors/FileReadError';
+import FileCopyError from '../../errors/FileCopyError';
+import UnsafeOpError from '../../errors/UnsafeOpError';
 import SearchTypeResolver from '../Enums/SearchTypeResolver';
-import FileWriteError from '../../Errors/FileWriteError';
-import FileRemoveError from '../../Errors/FileRemoveError';
+import FileWriteError from '../../errors/FileWriteError';
+import FileRemoveError from '../../errors/FileRemoveError';
 import {
   CleanEmptyDirectories,
   EnsureDirectoryExistence,
 } from './FsProviderUtils';
-import { MkdirMode } from '../Enums/MkdirMode';
-import EnumError from '../../Errors/EnumError';
+import { MkdirMode } from '../enums/MkdirMode';
+import EnumError from '../../errors/EnumError';
 
 export default class FsProvider {
   private static CHECK_FILE_SAFETY: boolean = true;

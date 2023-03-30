@@ -1,5 +1,5 @@
 import { SearchType } from './SearchType';
-import EnumError from '../../Errors/EnumError';
+import EnumError from '../../errors/EnumError';
 import {
   GetFiles,
   WalkDirectory,

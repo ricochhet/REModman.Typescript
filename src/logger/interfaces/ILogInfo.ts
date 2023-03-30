@@ -1,4 +1,4 @@
-import { LogType } from '../Enums/LogType';
+import { LogType } from '../enums/LogType';
 
 export interface LogInfo {
   Message: string;
