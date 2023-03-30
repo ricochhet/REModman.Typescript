@@ -1,6 +1,6 @@
 export enum SearchType {
-    TopFilesOnly,
-    SearchAllFiles,
-    TopDirectoriesOnly,
-    SearchAllDirectories
+  TopFilesOnly,
+  SearchAllFiles,
+  TopDirectoriesOnly,
+  SearchAllDirectories,
 }

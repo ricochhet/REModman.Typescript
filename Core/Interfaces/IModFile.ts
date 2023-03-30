@@ -1,5 +1,5 @@
-export interface ModFile {
-    InstallPath: string
-    SourcePath: string
-    Hash: string
+export interface IModFile {
+  InstallPath: string;
+  SourcePath: string;
+  Hash: string;
 }

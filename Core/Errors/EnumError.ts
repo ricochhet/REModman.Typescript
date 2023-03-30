@@ -1,3 +1,3 @@
-import REError from "./REError"
+import REError from './REError';
 
-export default class EnumError extends REError { }
+export default class EnumError extends REError {}
