@@ -1,4 +1,4 @@
-import { REEngine } from '../data/REEngine';
+import { REEngine } from '../patches/REEngine';
 import { GameType } from '../enums/GameType';
 import FsProvider from '../providers/generic/FsProvider';
 import { IModData } from '../interfaces/IModData';

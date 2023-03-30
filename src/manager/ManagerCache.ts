@@ -1,5 +1,5 @@
 import path from 'path';
-import { REEngine } from '../data/REEngine';
+import { REEngine } from '../patches/REEngine';
 import { GameType } from '../enums/GameType';
 import ManagerSettings from './ManagerSettings';
 import { IModData } from '../interfaces/IModData';
