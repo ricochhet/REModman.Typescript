@@ -3,7 +3,7 @@ import { SearchType } from '../enums/SearchType';
 import FileReadError from '../../errors/FileReadError';
 import FileCopyError from '../../errors/FileCopyError';
 import UnsafeOpError from '../../errors/UnsafeOpError';
-import SearchTypeResolver from '../Enums/SearchTypeResolver';
+import SearchTypeResolver from '../enums/SearchTypeResolver';
 import FileWriteError from '../../errors/FileWriteError';
 import FileRemoveError from '../../errors/FileRemoveError';
 import {

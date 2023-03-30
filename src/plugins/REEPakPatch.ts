@@ -1,9 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { WalkDirectory } from '../utils/GetDirectories';
+import FsProvider from '../providers/generic/FsProvider';
 import { DynamicBuffer } from './buffer/DynamicBuffer';
 import { MurMurHashV3 } from './MurMurHash';
 import { FileEntry } from './FileEntry';
+import { SearchType } from '../providers/enums/SearchType';
 
 export function ProcessDirectory(
     directory: string,
@@ -12,7 +13,10 @@ export function ProcessDirectory(
     const folder: string = path.join(directory, 'natives');
 
     if (fs.existsSync(folder) && fs.statSync(folder).isDirectory()) {
-        const sortedFiles = WalkDirectory(folder).sort();
+        const sortedFiles = FsProvider.GetPaths(
+            SearchType.SearchAllFiles,
+            folder,
+        ).sort();
         const fileEntries: Array<FileEntry> = [];
         const objBuffers: Array<Buffer> = [];
         let buf: DynamicBuffer = new DynamicBuffer({ encoding: 'utf16le' });

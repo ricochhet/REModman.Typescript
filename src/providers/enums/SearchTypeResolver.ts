@@ -5,7 +5,7 @@ import {
     WalkDirectory,
     GetDirectories,
     GetDirectoriesRecursive,
-} from '../Generic/FsProviderUtils';
+} from '../generic/FsProviderUtils';
 
 export default function SearchTypeResolver(
     type: SearchType,
