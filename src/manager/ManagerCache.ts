@@ -7,7 +7,7 @@ import { IModFile } from '../interfaces/IModFile';
 import PathResolver from '../resolvers/PathResolver';
 import { FileSha256, Sha256 } from '../utils/Sha256';
 import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
-import { SearchType } from '../providers/Enums/SearchType';
+import { SearchType } from '../providers/enums/SearchType';
 import FsProvider from '../providers/Generic/FsProvider';
 
 export default abstract class Cache {
@@ -20,7 +20,7 @@ export default abstract class Cache {
   }
 
   public static Load(type: GameType): Array<IModData> {
-    if (FsProvider.ExistsSync(PathResolver.DATA_DIR)) {
+    if (FsProvider.ExistsSync(PathResolver.DATA_PATH)) {
       const file: string = PathResolver.INDEX_PATH(type);
 
       if (FsProvider.ExistsSync(file)) {
@@ -101,7 +101,7 @@ export default abstract class Cache {
             );
 
             files.forEach(file => {
-              if (IsSafe(file)) {
+              if (FsProvider.IsPathSafe(file)) {
                 const installPath = path.join(
                   gameDirectory,
                   REEngine.InstallPath(file),
@@ -124,7 +124,7 @@ export default abstract class Cache {
           modDirectory,
         );
         files.forEach(file => {
-          if (IsSafe(file) && REEngine.IsValidPatchPak(file)) {
+          if (FsProvider.IsPathSafe(file) && REEngine.IsValidPatchPak(file)) {
             const installPath = path.join(
               gameDirectory,
               REEngine.InstallPath(file),

@@ -23,7 +23,7 @@ export default class PathResolver {
     return path.join(PathResolver._DATA_DIR, PathResolver._LOG_FILE);
   }
 
-  private static get SETTINGS_PATH(): string {
+  static get SETTINGS_PATH(): string {
     return path.join(PathResolver._DATA_DIR, PathResolver._SETTINGS_FILE);
   }
 

@@ -16,11 +16,13 @@ import EnumError from '../../errors/EnumError';
 export default class FsProvider {
   private static CHECK_FILE_SAFETY: boolean = true;
 
-  private static IsPathSafe(directory: string) {
+  public static IsPathSafe(directory: string): boolean {
     const unsafeValues: string[] = ['desktop.ini', 'thumbs.db'];
 
     if (unsafeValues.includes(directory))
       throw new UnsafeOpError('Unsafe file operation', 'Directory is unsafe');
+
+    return true
   }
 
   public static ReadFileSync(
