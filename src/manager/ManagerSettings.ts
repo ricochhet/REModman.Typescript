@@ -1,7 +1,7 @@
 import path from 'path';
 import { GameType } from '../enums/GameType';
 import PathResolver from '../resolvers/PathResolver';
-import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
+import { IsNullOrEmpty } from './utils/IsNullOrEmpty';
 import FsProvider from '../providers/generic/FsProvider';
 import { ISettingsData } from '../interfaces/ISettingsData';
 

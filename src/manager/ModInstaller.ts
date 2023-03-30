@@ -4,7 +4,7 @@ import FsProvider from '../providers/generic/FsProvider';
 import { IModData } from '../interfaces/IModData';
 import ManagerSettings from './ManagerSettings';
 import PathResolver from '../resolvers/PathResolver';
-import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
+import { IsNullOrEmpty } from './utils/IsNullOrEmpty';
 import Cache from './ManagerCache';
 
 export default abstract class ModInstaller {

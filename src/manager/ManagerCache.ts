@@ -5,10 +5,11 @@ import ManagerSettings from './ManagerSettings';
 import { IModData } from '../interfaces/IModData';
 import { IModFile } from '../interfaces/IModFile';
 import PathResolver from '../resolvers/PathResolver';
-import { FileSha256, Sha256 } from '../utils/Sha256';
-import { IsNullOrEmpty } from '../utils/IsNullOrEmpty';
+import Checksum from './utils/Checksum';
+import { IsNullOrEmpty } from './utils/IsNullOrEmpty';
 import { SearchType } from '../providers/enums/SearchType';
 import FsProvider from '../providers/generic/FsProvider';
+import { ChecksumType } from './utils/enums/ChecksumType';
 
 export default abstract class Cache {
     public static Save(type: GameType, list: Array<IModData>) {
@@ -107,7 +108,7 @@ export default abstract class Cache {
                                     gameDirectory,
                                     REEngine.InstallPath(file),
                                 );
-                                const fileHash: string = FileSha256(file);
+                                const fileHash: string = Checksum.File(ChecksumType.SHA256, file);
                                 hash += fileHash;
 
                                 modFiles.push({
@@ -133,7 +134,7 @@ export default abstract class Cache {
                             gameDirectory,
                             REEngine.InstallPath(file),
                         );
-                        const fileHash: string = FileSha256(file);
+                        const fileHash: string = Checksum.File(ChecksumType.SHA256, file);
                         hash += fileHash;
 
                         modFiles.push({
@@ -144,7 +145,7 @@ export default abstract class Cache {
                     }
                 });
 
-                const identifier: string = Sha256(hash);
+                const identifier: string = Checksum.String(ChecksumType.SHA256, hash);
                 if (
                     modFiles.length != 0 &&
                     IsNullOrEmpty(Cache.Find(list, identifier))
